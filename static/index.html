@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>CassavaGuard — Leaf Disease Diagnostic Platform | EfficientNet-B4</title>
+  <title>CassavaGuard — Leaf Disease Diagnostic Platform</title>
   <meta name="description" content="AI-powered cassava leaf disease diagnostic platform. ResNet50 deep learning for precision agriculture."/>
   <link rel="stylesheet" href="/static/style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -17,7 +17,7 @@
       <div class="sb-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       <h1>CassavaGuard</h1>
     </div>
-    <p>EfficientNet-B4 · v2.0</p>
+    <p>Diagnostic Platform v1.0</p>
   </div>
   <nav class="sb-nav">
     <a class="nav-item active" href="#" data-page="dashboard">
@@ -34,7 +34,7 @@
     </a>
   </nav>
   <div class="sb-footer">
-    CassavaGuard &middot; EfficientNet-B4
+    CassavaGuard &middot; ResNet50
     <div class="sb-status"><div class="sb-dot"></div><span id="model-status">Model Ready</span></div>
   </div>
 </aside>
@@ -42,7 +42,7 @@
 <header class="topbar">
   <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   <span class="topbar-title">Diagnostic Dashboard</span>
-  <span class="topbar-sub" id="topbar-sub">EfficientNet-B4 &middot; 5-Class Classifier</span>
+  <span class="topbar-sub" id="topbar-sub">ResNet50 &middot; 5-Class Classifier</span>
   <div class="topbar-right">
     <button class="tb-btn" id="theme-toggle" title="Toggle theme">
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -64,7 +64,7 @@
     <div class="stat-strip">
       <div class="stat-card">
         <div class="stat-ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <div><div class="stat-lbl">Model Architecture</div><div class="stat-val">EfficientNet-B4</div></div>
+        <div><div class="stat-lbl">Model Architecture</div><div class="stat-val">ResNet50</div></div>
       </div>
       <div class="stat-card">
         <div class="stat-ico b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
@@ -72,13 +72,13 @@
       </div>
       <div class="stat-card">
         <div class="stat-ico a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <div><div class="stat-lbl">Input Resolution</div><div class="stat-val">320 × 320 px</div></div>
+        <div><div class="stat-lbl">Input Resolution</div><div class="stat-val">224 × 224 px</div></div>
       </div>
     </div>
 
     <div class="dash-grid">
       <!-- LEFT: Image Acquisition -->
-      <div>
+      <div class="dash-left">
         <div class="card">
           <div class="card-hd">
             <h3>Image Acquisition</h3>
@@ -210,18 +210,128 @@
 
   <!-- DISEASE LIBRARY -->
   <section class="page" id="page-diseases">
-    <div class="page-hd"><h2>Disease Library</h2><p>Reference guide for all 5 cassava leaf pathologies detected by the model.</p></div>
-    <div style="border-radius:var(--rxl);overflow:hidden;border:1px solid var(--border);">
-      <table class="dtable">
-        <thead><tr><th>Disease</th><th>Abbr.</th><th>Severity</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td class="dn">Cassava Bacterial Blight</td><td>CBB</td><td><span class="sev-tag critical">Critical</span></td><td>Systemic vascular disease caused by Xanthomonas axonopodis; leads to wilting and plant death.</td></tr>
-          <tr><td class="dn">Brown Streak Disease</td><td>CBSD</td><td><span class="sev-tag high">High</span></td><td>Caused by cassava brown streak viruses via whiteflies; root necrosis, up to 70% yield loss.</td></tr>
-          <tr><td class="dn">Green Mottle</td><td>CGM</td><td><span class="sev-tag moderate">Moderate</span></td><td>Chlorotic mottling patterns reducing photosynthetic efficiency and yield.</td></tr>
-          <tr><td class="dn">Healthy</td><td>HLT</td><td><span class="sev-tag none">None</span></td><td>No visible disease or damage. Leaves fully expanded, deep green, no deformations.</td></tr>
-          <tr><td class="dn">Cassava Mosaic Disease</td><td>CMD</td><td><span class="sev-tag critical">Critical</span></td><td>Most widespread African cassava disease; geminiviruses via whiteflies; 20–95% yield loss.</td></tr>
-        </tbody>
-      </table>
+    <div class="page-hd"><h2>Disease Library</h2><p>Comprehensive reference guide for all 5 cassava leaf pathologies detected by the diagnostic model.</p></div>
+
+    <div class="dl-hero">
+      <h2>5 Classified Diseases</h2>
+      <p>CassavaGuard detects and classifies five distinct cassava leaf conditions — from critical pathologies to healthy specimens — enabling rapid field diagnosis and intervention.</p>
+    </div>
+
+    <div class="dl-list">
+      <div class="dl-row critical">
+        <div class="dl-watermark">CBB</div>
+        <div>
+          <div class="dl-row-head">
+            <div class="dl-row-name">Cassava Bacterial Blight</div>
+            <span class="dl-row-abbr-badge">CBB</span>
+            <span class="sev-tag critical">Critical</span>
+          </div>
+          <div class="dl-row-desc">A systemic vascular disease caused by <em>Xanthomonas axonopodis pv. manihotis</em>. Colonizes vascular tissue, causes angular leaf spots, stem dieback, and gum exudates. Spreads rapidly through rain splash and contaminated tools.</div>
+          <div class="dl-row-tags">
+            <span class="dl-row-tag">Angular leaf spots</span><span class="dl-row-tag">Stem dieback</span><span class="dl-row-tag">Gum exudate</span><span class="dl-row-tag">Vascular browning</span>
+          </div>
+        </div>
+        <div class="dl-row-right">
+          <div class="dl-yield-lbl">Max Yield Loss</div>
+          <div class="dl-yield-val critical">100%</div>
+          <div class="dl-bar-wrap"><div class="dl-bar critical" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="dl-row high">
+        <div class="dl-watermark">CBSD</div>
+        <div>
+          <div class="dl-row-head">
+            <div class="dl-row-name">Brown Streak Disease</div>
+            <span class="dl-row-abbr-badge">CBSD</span>
+            <span class="sev-tag high">High Risk</span>
+          </div>
+          <div class="dl-row-desc">Caused by Cassava Brown Streak Viruses transmitted by whiteflies. Produces vein banding on leaves and severe necrotic pitting in roots, rendering tubers entirely unmarketable. A major threat in East Africa.</div>
+          <div class="dl-row-tags">
+            <span class="dl-row-tag">Vein banding</span><span class="dl-row-tag">Root necrosis</span><span class="dl-row-tag">Brown stem streaks</span><span class="dl-row-tag">Root pitting</span>
+          </div>
+        </div>
+        <div class="dl-row-right">
+          <div class="dl-yield-lbl">Max Yield Loss</div>
+          <div class="dl-yield-val high">70%</div>
+          <div class="dl-bar-wrap"><div class="dl-bar high" style="width:70%"></div></div>
+        </div>
+      </div>
+
+      <div class="dl-row moderate">
+        <div class="dl-watermark">CGM</div>
+        <div>
+          <div class="dl-row-head">
+            <div class="dl-row-name">Green Mottle</div>
+            <span class="dl-row-abbr-badge">CGM</span>
+            <span class="sev-tag moderate">Moderate</span>
+          </div>
+          <div class="dl-row-desc">Caused by Cassava Green Mottle Virus. Produces chlorotic mottling patterns that reduce photosynthetic efficiency. Less economically devastating than CMD or CBSD, but still causes measurable yield loss in affected crops.</div>
+          <div class="dl-row-tags">
+            <span class="dl-row-tag">Chlorotic mottling</span><span class="dl-row-tag">Leaf distortion</span><span class="dl-row-tag">Mild stunting</span>
+          </div>
+        </div>
+        <div class="dl-row-right">
+          <div class="dl-yield-lbl">Max Yield Loss</div>
+          <div class="dl-yield-val moderate">30%</div>
+          <div class="dl-bar-wrap"><div class="dl-bar moderate" style="width:30%"></div></div>
+        </div>
+      </div>
+
+      <div class="dl-row none">
+        <div class="dl-watermark">HLT</div>
+        <div>
+          <div class="dl-row-head">
+            <div class="dl-row-name">Healthy</div>
+            <span class="dl-row-abbr-badge">HLT</span>
+            <span class="sev-tag none">No Risk</span>
+          </div>
+          <div class="dl-row-desc">No visible signs of disease or pest damage. Leaves are uniformly deep green, fully expanded without curling, deformity or discolouration. Confirmation of optimal growing conditions.</div>
+          <div class="dl-row-tags">
+            <span class="dl-row-tag">Uniform deep green</span><span class="dl-row-tag">No deformation</span><span class="dl-row-tag">Full expansion</span>
+          </div>
+        </div>
+        <div class="dl-row-right">
+          <div class="dl-yield-lbl">Yield Impact</div>
+          <div class="dl-yield-val none">None</div>
+          <div class="dl-bar-wrap"><div class="dl-bar none" style="width:2%"></div></div>
+        </div>
+      </div>
+
+      <div class="dl-row critical">
+        <div class="dl-watermark">CMD</div>
+        <div>
+          <div class="dl-row-head">
+            <div class="dl-row-name">Cassava Mosaic Disease</div>
+            <span class="dl-row-abbr-badge">CMD</span>
+            <span class="sev-tag critical">Critical</span>
+          </div>
+          <div class="dl-row-desc">The most devastating cassava disease in Africa. Caused by cassava mosaic geminiviruses (CMGs), transmitted by the silverleaf whitefly. Characteristic mosaic and chlorotic leaf patterns; severely stunted growth and up to 95% yield loss in severe outbreaks.</div>
+          <div class="dl-row-tags">
+            <span class="dl-row-tag">Mosaic patterns</span><span class="dl-row-tag">Leaf curling</span><span class="dl-row-tag">Chlorosis</span><span class="dl-row-tag">Severe stunting</span>
+          </div>
+        </div>
+        <div class="dl-row-right">
+          <div class="dl-yield-lbl">Max Yield Loss</div>
+          <div class="dl-yield-val critical">95%</div>
+          <div class="dl-bar-wrap"><div class="dl-bar critical" style="width:95%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card"><div class="card-hd"><h3>Quick Reference Table</h3></div>
+      <div style="overflow:hidden">
+        <table class="dtable">
+          <thead><tr><th>Disease</th><th>Abbr.</th><th>Severity</th><th>Primary Vector</th><th>Max Yield Loss</th></tr></thead>
+          <tbody>
+            <tr><td class="dn">Cassava Bacterial Blight</td><td>CBB</td><td><span class="sev-tag critical">Critical</span></td><td>Contaminated tools / rain</td><td>100%</td></tr>
+            <tr><td class="dn">Brown Streak Disease</td><td>CBSD</td><td><span class="sev-tag high">High</span></td><td>Whitefly (<em>Bemisia tabaci</em>)</td><td>70%</td></tr>
+            <tr><td class="dn">Green Mottle</td><td>CGM</td><td><span class="sev-tag moderate">Moderate</span></td><td>Aphids / mites</td><td>30%</td></tr>
+            <tr><td class="dn">Healthy</td><td>HLT</td><td><span class="sev-tag none">None</span></td><td>—</td><td>0%</td></tr>
+            <tr><td class="dn">Cassava Mosaic Disease</td><td>CMD</td><td><span class="sev-tag critical">Critical</span></td><td>Whitefly (<em>Bemisia tabaci</em>)</td><td>95%</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -229,21 +339,30 @@
   <section class="page" id="page-about">
     <div class="about-hero">
       <h2>About CassavaGuard</h2>
-      <p>An AI-powered diagnostic platform for cassava leaf disease classification. Built on EfficientNet-B4 transfer learning to assist agricultural researchers and field workers in identifying crop diseases rapidly and accurately.</p>
+      <p>An AI-powered diagnostic platform built on transfer learning to assist agricultural researchers and field workers in identifying cassava leaf diseases rapidly, accurately, and at scale.</p>
     </div>
+
+    <div class="about-stats">
+      <div class="about-stat"><div class="about-stat-val">5</div><div class="about-stat-lbl">Disease Classes</div></div>
+      <div class="about-stat"><div class="about-stat-val">224px</div><div class="about-stat-lbl">Input Resolution</div></div>
+      <div class="about-stat"><div class="about-stat-val">24M+</div><div class="about-stat-lbl">Parameters</div></div>
+      <div class="about-stat"><div class="about-stat-val">&lt;1s</div><div class="about-stat-lbl">Inference Time</div></div>
+    </div>
+
     <div class="about-grid">
-      <div class="about-card"><div class="about-card-ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>EfficientNet-B4 Backbone</h4><p>Transfer learning with EfficientNet-B4 pretrained on ImageNet, fine-tuned for robust 5-class cassava pathology classification with 1792-dim feature extraction.</p></div>
-      <div class="about-card"><div class="about-card-ico b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Two-Phase Training</h4><p>Phase 1: frozen backbone, train FC head. Phase 2: fine-tune last residual block with cosine annealing.</p></div>
-      <div class="about-card"><div class="about-card-ico a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h4>Actionable Insights</h4><p>Beyond classification — disease descriptions, symptom identification, and recommended agricultural interventions.</p></div>
+      <div class="about-card"><div class="about-card-ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>ResNet50 Backbone</h4><p>Pretrained ImageNet ResNet50 backbone with custom BatchNorm + Linear FC head, fine-tuned for precise 5-class cassava pathology classification.</p></div>
+      <div class="about-card"><div class="about-card-ico b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Two-Phase Training</h4><p>Phase 1: frozen backbone trains the FC classification head. Phase 2: fine-tunes the final residual block with cosine annealing for optimal convergence.</p></div>
+      <div class="about-card"><div class="about-card-ico a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h4>Actionable Insights</h4><p>Beyond raw classification — each diagnosis includes disease descriptions, visible symptoms, severity rating, and recommended agricultural interventions.</p></div>
     </div>
+
     <div class="card"><div class="card-hd"><h3>Technical Specifications</h3></div>
       <div class="card-body"><div class="spec-grid">
-        <div class="spec-item"><div class="sl">Model</div><div class="sv">EfficientNet-B4</div></div>
-        <div class="spec-item"><div class="sl">Input Size</div><div class="sv">320 × 320 px</div></div>
+        <div class="spec-item"><div class="sl">Model</div><div class="sv">ResNet50</div></div>
+        <div class="spec-item"><div class="sl">Input Size</div><div class="sv">224 × 224 px</div></div>
         <div class="spec-item"><div class="sl">Classes</div><div class="sv">5 Categories</div></div>
-        <div class="spec-item"><div class="sl">Framework</div><div class="sv">PyTorch + timm + FastAPI</div></div>
+        <div class="spec-item"><div class="sl">Framework</div><div class="sv">PyTorch + FastAPI</div></div>
         <div class="spec-item"><div class="sl">Normalization</div><div class="sv">ImageNet Stats</div></div>
-        <div class="spec-item"><div class="sl">Preprocessing</div><div class="sv">Resize + CenterCrop</div></div>
+        <div class="spec-item"><div class="sl">FC Head</div><div class="sv">BN→Linear→BN→Linear</div></div>
       </div></div>
     </div>
   </section>

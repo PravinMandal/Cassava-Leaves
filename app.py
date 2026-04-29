@@ -1,23 +1,22 @@
 """
 CassavaGuard — Cassava Leaf Disease Diagnostic Platform
-FastAPI backend with EfficientNet-B4 inference.
+FastAPI backend with ResNet50 + custom FC head inference.
 """
 
 import io
 import os
 from pathlib import Path
-import timm
 import torch
 import torch.nn as nn
-from torchvision import transforms
+from torchvision import models, transforms
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
 # ── Config ──────────────────────────────────────────────────────
-BASE_DIR   = Path(__file__).resolve().parent
-MODEL_PATH = Path(os.environ.get("MODEL_PATH", str(BASE_DIR / "model" / "V1.pth")))
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = Path(os.environ.get("MODEL_PATH", str(BASE_DIR / "model" / "model_inference.pth")))
 NUM_CLASSES = 5
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -121,46 +120,48 @@ CLASS_META = {
 }
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
-IMAGENET_STD  = [0.229, 0.224, 0.225]
+IMAGENET_STD = [0.229, 0.224, 0.225]
 
-# EfficientNet-B4 standard eval transform: resize to 380, center-crop to 320
 inference_transform = transforms.Compose([
-    transforms.Resize(320),
-    transforms.CenterCrop(320),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
 ])
 
-# ── Model Architecture (EfficientNet-B4 + custom classifier) ───
-# Matches the training checkpoint structure: backbone + classifier
-class CassavaModel(nn.Module):
-    def __init__(self, num_classes: int = NUM_CLASSES):
-        super().__init__()
-        self.backbone = timm.create_model(
-            "efficientnet_b4",
-            pretrained=False,
-            num_classes=0,       # output raw features (1792-dim)
-        )
-        self.classifier = nn.Linear(1792, num_classes)
-
-    def forward(self, x):
-        features = self.backbone(x)
-        return self.classifier(features)
-
-
+# ── Model ───────────────────────────────────────────────────────
 def load_model():
-    net = CassavaModel()
+    net = models.resnet50(weights=None)
+    in_features = net.fc.in_features  # 2048
+    # Exact FC head from checkpoint:
+    # fc.0=BN(2048), fc.1=ReLU, fc.2=Linear(2048,512),
+    # fc.3=ReLU, fc.4=BN(512), fc.5=Dropout, fc.6=Linear(512,5)
+    net.fc = nn.Sequential(
+        nn.BatchNorm1d(in_features),
+        nn.ReLU(inplace=True),
+        nn.Linear(in_features, 512),
+        nn.ReLU(inplace=True),
+        nn.BatchNorm1d(512),
+        nn.Dropout(0.3),
+        nn.Linear(512, NUM_CLASSES),
+    )
     if MODEL_PATH.exists():
-        print(f"Loading EfficientNet-B4 model from: {MODEL_PATH}")
-        ckpt = torch.load(MODEL_PATH, map_location=DEVICE, weights_only=False)
-        # Checkpoint stores weights under 'model_state_dict'
-        state_dict = ckpt.get("model_state_dict", ckpt)
-        net.load_state_dict(state_dict)
-        epoch = ckpt.get("epoch", "?")
-        score = ckpt.get("best_score", "?")
-        print(f"Model loaded. Epoch={epoch}, best_score={score}")
+        print(f"Loading model from: {MODEL_PATH}")
+        try:
+            ckpt = torch.load(MODEL_PATH, map_location=DEVICE, weights_only=False)
+            # Checkpoint is a dict with 'model_state_dict' key
+            if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
+                state = ckpt["model_state_dict"]
+            elif isinstance(ckpt, dict) and "state_dict" in ckpt:
+                state = ckpt["state_dict"]
+            else:
+                state = ckpt
+            net.load_state_dict(state)
+            print("Model loaded successfully.")
+        except Exception as e:
+            print(f"ERROR loading model: {e}")
     else:
-        print(f"WARNING: Model not found at {MODEL_PATH} — running with random weights")
+        print(f"WARNING: Model not found at {MODEL_PATH} — running in demo mode (random weights)")
     net.to(DEVICE)
     net.eval()
     return net
@@ -168,7 +169,7 @@ def load_model():
 model = load_model()
 
 # ── App ─────────────────────────────────────────────────────────
-app = FastAPI(title="CassavaGuard", version="1.0.0")
+app = FastAPI(title="CassavaGuard", version="2.0.0")
 
 STATIC_DIR = BASE_DIR / "static"
 STATIC_DIR.mkdir(exist_ok=True)

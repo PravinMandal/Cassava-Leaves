@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     emptyProb.style.display = "flex"; probResult.style.display = "none";
     emptyRadar.style.display = "flex"; radarResult.style.display = "none";
     detailsSec.classList.remove("visible");
+    document.querySelector(".dash-grid").classList.remove("has-results");
     [ringChart, barChart, radarChart].forEach(c => { if (c) c.destroy(); });
     ringChart = barChart = radarChart = null;
   }
@@ -123,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Render ─────────────────────────────────────────
   function renderResults(data) {
+    // Switch grid to stretch so left card grows to match right
+    document.querySelector(".dash-grid").classList.add("has-results");
     // Diagnosis card
     emptyDiag.style.display = "none";
     diagResult.style.display = "block";
