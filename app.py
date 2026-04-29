@@ -5,6 +5,7 @@ FastAPI backend with ResNet50 + custom FC head inference.
 
 import io
 import os
+import logging
 from pathlib import Path
 import torch
 import torch.nn as nn
@@ -13,6 +14,9 @@ from PIL import Image
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("cassavaguard")
 
 # ── Config ──────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
@@ -185,6 +189,16 @@ app = FastAPI(title="CassavaGuard", version="2.0.0")
 
 STATIC_DIR = BASE_DIR / "static"
 STATIC_DIR.mkdir(exist_ok=True)
+
+# ── Validate static assets at startup ───────────────────────────
+REQUIRED_STATIC = ["index.html", "style.css", "script.js"]
+for _asset in REQUIRED_STATIC:
+    _path = STATIC_DIR / _asset
+    if _path.exists():
+        logger.info(f"Static asset OK: {_asset} ({_path.stat().st_size:,} bytes)")
+    else:
+        logger.error(f"MISSING static asset: {_asset} — expected at {_path}")
+
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
@@ -194,9 +208,32 @@ async def health_check():
     return {"status": "ok"}
 
 
+@app.get("/static-check")
+async def static_check():
+    """Diagnostic endpoint — returns inventory of every file in the static directory."""
+    files = {}
+    if STATIC_DIR.exists():
+        for f in sorted(STATIC_DIR.iterdir()):
+            if f.is_file():
+                files[f.name] = {"size_bytes": f.stat().st_size, "exists": True}
+    missing = [a for a in REQUIRED_STATIC if a not in files]
+    return JSONResponse({
+        "static_dir": str(STATIC_DIR),
+        "static_dir_exists": STATIC_DIR.exists(),
+        "files": files,
+        "required_assets": REQUIRED_STATIC,
+        "missing_assets": missing,
+        "all_assets_present": len(missing) == 0,
+    })
+
+
 @app.get("/")
 async def index():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    index_path = STATIC_DIR / "index.html"
+    if not index_path.exists():
+        logger.error(f"index.html not found at {index_path}")
+        raise HTTPException(status_code=404, detail="index.html not found — static files may not have been copied correctly.")
+    return FileResponse(str(index_path), media_type="text/html")
 
 
 @app.post("/predict")
@@ -236,6 +273,15 @@ async def predict(file: UploadFile = File(...)):
         "actions": meta["actions"],
         "distribution": distribution,
     })
+
+
+@app.get("/{full_path:path}")
+async def spa_fallback(full_path: str):
+    """Catch-all: serve index.html for any unmatched path (SPA client-side routing)."""
+    index_path = STATIC_DIR / "index.html"
+    if not index_path.exists():
+        raise HTTPException(status_code=404, detail="index.html not found.")
+    return FileResponse(str(index_path), media_type="text/html")
 
 
 if __name__ == "__main__":
