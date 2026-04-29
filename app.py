@@ -145,8 +145,20 @@ def load_model():
         nn.Dropout(0.3),
         nn.Linear(512, NUM_CLASSES),
     )
+    # If model is missing or is just a small LFS pointer file (< 1MB)
+    if not MODEL_PATH.exists() or MODEL_PATH.stat().st_size < 1000000:
+        print(f"Model missing or is an LFS pointer. Downloading from GitHub...")
+        import urllib.request
+        model_url = "https://github.com/PravinMandal/Cassava-Leaves/raw/main/model/model_inference.pth"
+        try:
+            MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+            urllib.request.urlretrieve(model_url, MODEL_PATH)
+            print("Download complete.")
+        except Exception as e:
+            print(f"Failed to download model: {e}")
+
     if MODEL_PATH.exists():
-        print(f"Loading model from: {MODEL_PATH}")
+        print(f"Loading model from: {MODEL_PATH} (Size: {MODEL_PATH.stat().st_size / 1024 / 1024:.2f} MB)")
         try:
             ckpt = torch.load(MODEL_PATH, map_location=DEVICE, weights_only=False)
             # Checkpoint is a dict with 'model_state_dict' key

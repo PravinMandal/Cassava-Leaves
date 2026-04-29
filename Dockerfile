@@ -1,10 +1,9 @@
 # CassavaGuard — Dockerfile (CPU-only PyTorch for Railway/Render)
 FROM python:3.11-slim
 
-# System deps + git-lfs (needed to fetch the real model binary from GitHub LFS)
+# System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 libglib2.0-0 git git-lfs \
-    && git lfs install \
+    libgl1 libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -26,12 +25,7 @@ RUN pip install --no-cache-dir \
 # ── Copy app files ──
 COPY app.py .
 COPY static/ ./static/
-
-# ── Handle model: copy it, then resolve LFS pointer if needed ──
 COPY model/ ./model/
-COPY .git/ ./.git/
-RUN cd /app && git lfs pull --include="model/*" || true
-RUN rm -rf .git
 
 EXPOSE 8080
 
