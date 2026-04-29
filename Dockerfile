@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir \
 
 # ── Install remaining deps ──
 RUN pip install --no-cache-dir \
-    numpy<2 \
+    "numpy<2" \
     fastapi \
     "uvicorn[standard]" \
     Pillow \
