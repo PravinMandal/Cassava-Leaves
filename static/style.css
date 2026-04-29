@@ -81,17 +81,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .stat-val{font-size:.95rem;font-weight:700;}
 
 /* ── Dashboard Grid ── */
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
-.dash-left{display:flex;flex-direction:column;}
-/* Card is natural height until results arrive */
-.dash-left .card{display:flex;flex-direction:column;}
-.dash-left .card .card-body{display:flex;flex-direction:column;gap:10px;padding-bottom:16px;}
-/* After analysis: stretch left card to match right panel height */
-.dash-grid.has-results{align-items:stretch;}
-.dash-grid.has-results .dash-left .card{flex:1;}
-.dash-grid.has-results .dash-left .card .card-body{flex:1;}
-/* Preview image grows to fill extra height — no dead space below button */
-.dash-grid.has-results .preview-container{flex:1;height:auto;min-height:200px;}
+/* ALWAYS stretch: left card height = right panel total height at every stage */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;}
+.dash-left{display:flex;flex-direction:column;height:100%;min-height:0;}
+.dash-left .card{flex:1;display:flex;flex-direction:column;min-height:0;}
+.dash-left .card .card-body{flex:1;display:flex;flex-direction:column;gap:10px;padding-bottom:16px;min-height:0;}
 
 /* ── Cards ── */
 .card{background:var(--s0);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;transition:border-color .25s,box-shadow .25s;}
@@ -109,8 +103,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   background-color:var(--s1);
   background-image:radial-gradient(rgba(0,212,106,.07) 1px,transparent 1px);
   background-size:22px 22px;
-  /* fixed comfortable height, does NOT force card to expand */
-  min-height:200px;
+  /* fills ALL available card-body space so left card matches right panel */
+  flex:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .upload-zone::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,212,106,.08) 0%,transparent 65%);opacity:0;transition:opacity .35s;pointer-events:none;}
 .upload-zone:hover{border-color:rgba(0,212,106,.5);}
@@ -135,8 +129,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
 /* ── Preview ── */
 .preview-area{display:none;}.preview-area.visible{display:contents;}
-.preview-container{border-radius:var(--rlg);overflow:hidden;border:1px solid var(--border);background:var(--s1);height:200px;display:flex;align-items:center;justify-content:center;}
-.preview-container img{width:100%;height:100%;object-fit:contain;display:block;}
+/* flex:1 and min-height:0 makes the preview image grow/shrink to fill exactly the available height dictated by the right panel */
+.preview-container{border-radius:var(--rlg);overflow:hidden;border:1px solid var(--border);background:var(--s1);flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;}
+.preview-container img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;display:block;}
 .preview-file-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:9px 13px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);}
 .preview-file-icon{width:30px;height:30px;border-radius:7px;background:var(--green-dim);color:var(--green);display:grid;place-items:center;flex-shrink:0;}
 .preview-file-icon svg{width:14px;height:14px;}

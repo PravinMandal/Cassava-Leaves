@@ -27,6 +27,7 @@ COPY app.py .
 COPY static/ ./static/
 COPY model/ ./model/
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Railway sets $PORT automatically (usually 8080). Default matches Railway.
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8080} --workers 1"]
