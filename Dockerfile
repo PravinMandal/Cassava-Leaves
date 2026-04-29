@@ -1,4 +1,4 @@
-# CassavaGuard — Dockerfile for Railway / Render / Cloud Run
+# CassavaGuard — Dockerfile (CPU-only PyTorch for Railway/Render)
 FROM python:3.11-slim
 
 # System deps
@@ -8,17 +8,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install Python dependencies first (layer cache)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# ── Install CPU-only PyTorch FIRST (separate layer for caching) ──
+# CPU wheel is ~200MB vs 2.5GB for the default CUDA build
+RUN pip install --no-cache-dir \
+    torch==2.2.2+cpu \
+    torchvision==0.17.2+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
 
-# Copy app files
+# ── Install remaining deps ──
+RUN pip install --no-cache-dir \
+    fastapi \
+    "uvicorn[standard]" \
+    Pillow \
+    python-multipart
+
+# ── Copy app files ──
 COPY app.py .
 COPY static/ ./static/
 COPY model/ ./model/
 
-# Expose port (Railway/Render read $PORT automatically)
 EXPOSE 8000
 
-# Start with uvicorn, binding to 0.0.0.0 on $PORT
 CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]

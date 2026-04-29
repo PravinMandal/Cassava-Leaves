@@ -82,12 +82,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
 /* ── Dashboard Grid ── */
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
-/* 'start' by default; JS adds .has-results to switch to stretch */
-.dash-grid.has-results{align-items:stretch;}
 .dash-left{display:flex;flex-direction:column;}
-.dash-left .card{flex:1;display:flex;flex-direction:column;}
-/* card-body fills remaining space and stacks children vertically */
-.dash-left .card .card-body{flex:1;display:flex;flex-direction:column;gap:10px;padding-bottom:16px;}
+/* Card is natural height until results arrive */
+.dash-left .card{display:flex;flex-direction:column;}
+.dash-left .card .card-body{display:flex;flex-direction:column;gap:10px;padding-bottom:16px;}
+/* After analysis: stretch left card to match right panel height */
+.dash-grid.has-results{align-items:stretch;}
+.dash-grid.has-results .dash-left .card{flex:1;}
+.dash-grid.has-results .dash-left .card .card-body{flex:1;}
+/* Preview image grows to fill extra height — no dead space below button */
+.dash-grid.has-results .preview-container{flex:1;height:auto;min-height:200px;}
 
 /* ── Cards ── */
 .card{background:var(--s0);border:1px solid var(--border);border-radius:var(--rxl);overflow:hidden;transition:border-color .25s,box-shadow .25s;}
@@ -105,8 +109,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   background-color:var(--s1);
   background-image:radial-gradient(rgba(0,212,106,.07) 1px,transparent 1px);
   background-size:22px 22px;
-  /* fill all available vertical space in the card-body flex container */
-  flex:1;
+  /* fixed comfortable height, does NOT force card to expand */
+  min-height:200px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .upload-zone::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,212,106,.08) 0%,transparent 65%);opacity:0;transition:opacity .35s;pointer-events:none;}
 .upload-zone:hover{border-color:rgba(0,212,106,.5);}
@@ -143,7 +147,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .remove-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-dim);}
 .remove-btn svg{width:12px;height:12px;}
 
-.analyze-btn{width:100%;margin-top:auto;padding:13px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:var(--rlg);font-size:.875rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;box-shadow:0 4px 20px rgba(0,212,106,.3);}
+.analyze-btn{width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:var(--rlg);font-size:.875rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;box-shadow:0 4px 20px rgba(0,212,106,.3);}
 .analyze-btn:hover{box-shadow:0 6px 28px rgba(0,212,106,.5);transform:translateY(-2px);}
 .analyze-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
 .spinner{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
