@@ -1,15 +1,15 @@
 # CassavaGuard — Dockerfile (CPU-only PyTorch for Railway/Render)
 FROM python:3.11-slim
 
-# System deps
+# System deps + git-lfs (needed to fetch the real model binary from GitHub LFS)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 libglib2.0-0 \
+    libgl1 libglib2.0-0 git git-lfs \
+    && git lfs install \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # ── Install CPU-only PyTorch FIRST (separate layer for caching) ──
-# CPU wheel is ~200MB vs 2.5GB for the default CUDA build
 RUN pip install --no-cache-dir \
     torch==2.2.2+cpu \
     torchvision==0.17.2+cpu \
@@ -26,9 +26,13 @@ RUN pip install --no-cache-dir \
 # ── Copy app files ──
 COPY app.py .
 COPY static/ ./static/
+
+# ── Handle model: copy it, then resolve LFS pointer if needed ──
 COPY model/ ./model/
+COPY .git/ ./.git/
+RUN cd /app && git lfs pull --include="model/*" || true
+RUN rm -rf .git
 
 EXPOSE 8080
 
-# Railway sets $PORT automatically (usually 8080). Default matches Railway.
 CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8080} --workers 1"]
